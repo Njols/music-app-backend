@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-n5ry%_vp4@yh2i$(ii3+b-%s_u=7tk!%+h8hdd^7-6**b@83yp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["groups"]
 
 
 # Application definition
@@ -83,7 +83,7 @@ DATABASES = {
         "NAME": "groupsdb",
         "USER": "root",
         "PASSWORD": "root",
-        "HOST": "db",
+        "HOST": "groupsdb",
         "PORT": "3306",
     }
 }
