@@ -1,0 +1,13 @@
+name: Users workflow
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  call-base-workflow:
+    uses: Njols/music-app-backend/.github/workflows/django-reusable-workflow.yml@main
+    with:
+      main-folder-name: users
