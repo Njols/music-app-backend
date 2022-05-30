@@ -1,0 +1,18 @@
+name: Django main workflow
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  call-base-workflow-for-groups:
+    uses: Njols/music-app-backend/.github/workflows/django-reusable-workflow.yml@main
+    with:
+      main-folder-name: groups
+
+  call-base-workflow-for-users:
+    uses: Njols/music-app-backend/.github/workflows/django-reusable-workflow.yml@main
+    with:
+      main-folder-name: users
