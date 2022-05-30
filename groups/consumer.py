@@ -23,18 +23,20 @@ def callback(channel, method, properties, body):
     data = json.loads(body)
     if properties.content_type == "user_created":
         new_user = data
-        serializer = UserSerializer(data=new_user)
-        if serializer.is_valid():
-            serializer.save()
+        if not User.objects.filter(user_id=new_user["id"]).exists():
+            new_user["user_id"] = data["id"]
+            serializer = UserSerializer(data=new_user)
+            if serializer.is_valid():
+                serializer.save()
 
     if properties.content_type == "user_deleted":
         id = data
-        user = User.objects.get(id=id)
+        user = User.objects.filter(user_id=id)
         user.delete()
 
     if properties.content_type == "user_changed":
         changed_user = data
-        user = User.objects.get(id=changed_user.user_id)
+        user = User.objects.filter(user_id=changed_user.id)
         serializer = UserSerializer(user, data=changed_user)
         if serializer.is_valid():
             serializer.save()

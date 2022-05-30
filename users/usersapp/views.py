@@ -25,7 +25,6 @@ class UserDetailController(GenericAPIView):
         return Response(serializer.data)
 
     def put(self, request, pk):
-        # validate email and password
         try:
             user = self.queryset.get(pk=pk)
         except User.DoesNotExist:
@@ -59,7 +58,6 @@ class UserListController(GenericAPIView):
 
     def post(self, request):
         new_user = request.data
-        # validate email and password
         new_user["password"] = make_password(self.request.data["password"])
         serializer = self.serializer_class(data=new_user)
         serializer.is_valid(raise_exception=True)
