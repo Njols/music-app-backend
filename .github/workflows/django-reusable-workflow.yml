@@ -1,7 +1,7 @@
 name: Django workflow
 
 on:
-  workflow-call:
+  workflow_call:
     inputs:
       main-folder-name:
         required: true
