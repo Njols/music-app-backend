@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: groups-queue
+  labels:
+    app: groups-queue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: groups-queue
+  template:
+    metadata:
+      labels:
+        app: groups-queue
+    spec:
+      containers:
+        - name: groups-queue
+          image: localhost:5000/groups-queue:v0.2

@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-a5l-_(w@to0la2u_y0vzc8+$gwp^p&e*)%hr6dh7$9-y#cvz=!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.99.102", "backend"]
+ALLOWED_HOSTS = ["users-api-service"]
 
 
 # Application definition
@@ -82,10 +82,10 @@ WSGI_APPLICATION = "users.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "users",
+        "NAME": "usersdb",
         "USER": "root",
         "PASSWORD": "root",
-        "HOST": "db",
+        "HOST": "users-db-service",
         "PORT": "3306",
     }
 }

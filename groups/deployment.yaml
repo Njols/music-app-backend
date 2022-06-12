@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: groups-api
+  labels:
+    app: groups-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: groups-api
+  template:
+    metadata:
+      labels:
+        app: groups-api
+    spec:
+      containers:
+        - name: groups-api
+          image: localhost:5000/groups-api:v5.8
+          ports:
+            - containerPort: 8000

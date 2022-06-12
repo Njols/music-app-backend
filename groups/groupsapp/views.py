@@ -7,6 +7,8 @@ from .models import Group, User
 
 class GroupListController(GenericAPIView):
     serializer_class = GroupSerializer
+    user_serializer = UserSerializer
+    user_queryset = User.objects
 
     def get(self, request):
         groups = Group.objects.all()
@@ -15,7 +17,6 @@ class GroupListController(GenericAPIView):
 
     def post(self, request):
         new_group = request.data
-        new_group["members"] = []
         serializer = self.serializer_class(data=new_group)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -67,3 +68,15 @@ class UserListController(GenericAPIView):
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
+
+
+class GroupJoinController(GenericAPIView):
+    queryset = Group.objects
+    user_queryset = User.objects
+
+    def post(self, request, pk):
+        data = request.data
+        group = self.queryset.get(pk=pk)
+        user = self.user_queryset.get(user_id=data["user_id"])
+        group.members.add(user)
+        return Response(status=status.HTTP_200_OK)

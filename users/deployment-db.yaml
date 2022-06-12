@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-db
+  labels:
+    app: users-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users-db
+  template:
+    metadata:
+      labels:
+        app: users-db
+    spec:
+      containers:
+        - name: users-db
+          image: mysql:5.7.22
+          env:
+            - name: MYSQL_DATABASE
+              value: usersdb
+            - name: MYSQL_USER
+              value: root
+            - name: MYSQL_PASSWORD
+              value: root
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: databasedata
+          ports:
+            - containerPort: 3306
+      volumes:
+        - name: databasedata
+          hostPath:
+            path: /.databasedata
+            type: DirectoryOrCreate

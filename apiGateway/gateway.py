@@ -9,8 +9,8 @@ import jwt
 app = Flask(__name__)
 CORS(app)
 
-USER_API_URL = "http://backend:8000"
-GROUP_API_URL = "http://groups:8000"
+USER_API_URL = "http://users-api-service:80"
+GROUP_API_URL = "http://groups-api-service:80"
 
 
 def authorize(token):
@@ -26,8 +26,15 @@ def authorize(token):
     if authorize.status_code == 401:
         abort(401)
 
+    decoded_payload = jwt.decode(
+        token,
+        "django-insecure-a5l-_(w@to0la2u_y0vzc8+$gwp^p&e*)%hr6dh7$9-y#cvz=!",  # taken from django config SECRET_KEY
+        algorithms=["HS256"],
+    )
+    return decoded_payload
 
-@app.route("/token/refresh/", methods=["POST"])
+
+@app.route("/api/token/refresh/", methods=["POST"])
 def refresh():
     if request.method == "POST":
         data = request.get_json()
@@ -39,7 +46,7 @@ def refresh():
         return (resp.text, resp.status_code, resp.headers.items())
 
 
-@app.route("/login/", methods=["POST"])
+@app.route("/api/login/", methods=["POST"])
 def login():
     if request.method == "POST":
         data = request.get_json()
@@ -51,7 +58,7 @@ def login():
         return (resp.text, resp.status_code, resp.headers.items())
 
 
-@app.route("/users/", methods=["GET", "POST"])
+@app.route("/api/users/", methods=["GET", "POST"])
 def users():
     if request.method == "GET":
         resp = requests.get(USER_API_URL + "/backend/users/")
@@ -68,7 +75,13 @@ def users():
         return (resp.text, resp.status_code, resp.headers.items())
 
 
-@app.route("/groups/", methods=["GET", "POST"])
+@app.route("/api/users/<user_id>", methods=["GET"])
+def user(user_id):
+    resp = requests.get(USER_API_URL + "/backend/users/" + user_id + "/")
+    return (resp.text, resp.status_code, resp.headers.items())
+
+
+@app.route("/api/groups/", methods=["GET", "POST"])
 def groups():
     if request.method == "GET":
         resp = requests.get(GROUP_API_URL + "/groups/")
@@ -86,7 +99,7 @@ def groups():
         return (resp.text, resp.status_code, resp.headers.items())
 
 
-@app.route("/groups/<group_id>", methods=["GET", "PUT"])
+@app.route("/api/groups/<group_id>", methods=["GET", "PUT"])
 def group(group_id):
     if request.method == "GET":
         resp = requests.get(GROUP_API_URL + "/groups/" + group_id)
@@ -102,7 +115,24 @@ def group(group_id):
     return (resp.text, resp.status_code, resp.headers.items())
 
 
-@app.route("/groups/users", methods=["GET"])
+@app.route("/api/groups/<group_id>/join", methods=["POST"])
+def join_group(group_id):
+    token = request.headers.get("Authorization")
+    data = request.get_json()
+    resp = requests.post(
+        GROUP_API_URL + "/groups/" + group_id + "/join/",
+        headers={"accept": "application/json"},
+        json=data,
+    )
+    return (resp.text, resp.status_code, resp.headers.items())
+
+
+@app.route("/api/groups/users", methods=["GET"])
 def group_users():
     resp = requests.get(GROUP_API_URL + "/users/")
     return (resp.text, resp.status_code, resp.headers.items())
+
+
+@app.route("/api/test", methods=["GET"])
+def test():
+    return ("test", 200)
