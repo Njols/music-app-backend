@@ -16,6 +16,19 @@ spec:
     spec:
       containers:
         - name: users-api
-          image: localhost:5000/users-api:v0.3
+          image: localhost:5000/users-api:v0.4
+          env:
+            - name: HOST_NAME
+              value: "users-api-service"
+            - name: DB_NAME
+              value: "usersdb"
+            - name: DB_USER
+              value: "root"
+            - name: DB_PASSWORD
+              value: "root"
+            - name: DB_HOST
+              value: "users-db-service"
+            - name: DB_HOST_PORT
+              value: "3306"
           ports:
             - containerPort: 8000
