@@ -83,11 +83,11 @@ WSGI_APPLICATION = "users.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": os.getenv("DB_NAME"),
-        "USER": os.getenv("DB_USER"),
-        "PASSWORD": os.getenv("DB_PASSWORD"),
-        "HOST": os.getenv("DB_HOST"),
-        "PORT": os.getenv("DB_HOST_PORT"),
+        "NAME": os.getenv("DB_NAME", "TEST"),
+        "USER": os.getenv("DB_USER", "TEST"),
+        "PASSWORD": os.getenv("DB_PASSWORD", "TEST"),
+        "HOST": os.getenv("DB_HOST", "TEST"),
+        "PORT": os.getenv("DB_HOST_PORT", "TEST"),
     }
 }
 
