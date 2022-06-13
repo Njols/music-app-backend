@@ -6,7 +6,8 @@ RUN pip install -r requirements.txt
 COPY . /app/
 
 # Install OpenSSH and set the password for root to "Docker!". In this example, "apk add" is the install instruction for an Alpine Linux-based image.
-RUN echo "root:Docker!" | chpasswd 
+RUN apt install openssh -y \
+    && echo "root:Docker!" | chpasswd 
 
 # Copy the sshd_config file to the /etc/ssh/ directory
 COPY sshd_config /etc/ssh/
