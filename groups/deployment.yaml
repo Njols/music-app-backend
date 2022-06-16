@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: groups-api
-          image: localhost:5000/groups-api:v5.8
+          image: localhost:5000/groups-api:v5.9
           ports:
             - containerPort: 8000

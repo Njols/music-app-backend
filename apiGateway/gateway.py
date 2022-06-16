@@ -9,7 +9,7 @@ import jwt
 app = Flask(__name__)
 CORS(app)
 
-USER_API_URL = "http://users-api-service:80"
+USER_API_URL = "http://music-app-user-api.azurewebsites.net:80"
 GROUP_API_URL = "http://groups-api-service:80"
 
 
@@ -99,18 +99,26 @@ def groups():
         return (resp.text, resp.status_code, resp.headers.items())
 
 
-@app.route("/api/groups/<group_id>", methods=["GET", "PUT"])
+@app.route("/api/groups/<group_id>", methods=["GET", "PUT", "DELETE"])
 def group(group_id):
     if request.method == "GET":
         resp = requests.get(GROUP_API_URL + "/groups/" + group_id)
 
     if request.method == "PUT":
+        token = request.headers.get("Authorization")
         data = request.get_json()
-        resp = requests.post(
-            GROUP_API_URL + "/groups/" + group_id,
-            headers={"accept": "application/json"},
-            json=data,
-        )
+        if authorize(token=token)["user_id"] == data["user_id"]:
+            resp = requests.put(
+                GROUP_API_URL + "/groups/" + group_id,
+                headers={"accept": "application/json"},
+                json=data,
+            )
+
+    if request.method == "DELETE":
+        token = request.headers.get("Authorization")
+        data = request.get_json()
+        if authorize(token=token)["user_id"] == data["user_id"]:
+            resp = requests.delete(GROUP_API_URL + "/groups/" + group_id)
 
     return (resp.text, resp.status_code, resp.headers.items())
 
@@ -119,20 +127,29 @@ def group(group_id):
 def join_group(group_id):
     token = request.headers.get("Authorization")
     data = request.get_json()
-    resp = requests.post(
-        GROUP_API_URL + "/groups/" + group_id + "/join/",
-        headers={"accept": "application/json"},
-        json=data,
-    )
-    return (resp.text, resp.status_code, resp.headers.items())
+    if authorize(token=token)["user_id"] == data["user_id"]:
+        resp = requests.post(
+            GROUP_API_URL + "/groups/" + group_id + "/join/",
+            headers={"accept": "application/json"},
+            json=data,
+        )
+        return (resp.text, resp.status_code, resp.headers.items())
+
+
+@app.route("/api/groups/<group_id>/leave", methods=["POST"])
+def leave_group(group_id):
+    token = request.headers.get("Authorization")
+    data = request.get_json()
+    if authorize(token=token)["user_id"] == data["user_id"]:
+        resp = requests.post(
+            GROUP_API_URL + "/groups/" + group_id + "/leave/",
+            headers={"accept": "application/json"},
+            json=data,
+        )
+        return (resp.text, resp.status_code, resp.headers.items())
 
 
 @app.route("/api/groups/users", methods=["GET"])
 def group_users():
     resp = requests.get(GROUP_API_URL + "/users/")
     return (resp.text, resp.status_code, resp.headers.items())
-
-
-@app.route("/api/test", methods=["GET"])
-def test():
-    return ("test", 200)
